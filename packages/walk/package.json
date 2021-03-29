@@ -1,0 +1,17 @@
+{
+  "name": "@dorilama/walk",
+  "version": "0.1.0",
+  "description": "recursively walk a folder",
+  "scripts": {
+    "test": "c8 node test/index.js | tap-set-exit",
+    "test:only": "RUN_ONLY=true node test/index.js"
+  },
+  "keywords": [],
+  "author": "dorilama",
+  "license": "ISC",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.js",
+    "./package.json": "./package.json"
+  }
+}
