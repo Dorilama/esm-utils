@@ -1,17 +1,17 @@
 // @ts-ignore it works in node 15.12, see also https://github.com/nodejs/node/pull/37179
 import { watch as fsWatch } from "fs/promises";
-// @ts-ignore  TODO find why node resolve this correctly but the checker doesn't
+// @ts-ignore  TODO find why node resolve workspaces correctly but the ts-checker doesn't
 import { walk } from "@dorilama/walk";
 
 /**
  * NOTE!!! node 15.12
  * watch function exported from fs/promises does not throw
- * ERR_FEATURE_UNAVAILABLE_ON_PLATFORM
+ * with "ERR_FEATURE_UNAVAILABLE_ON_PLATFORM"
  * if watching recursively on an unsupported platform.
  * see more here https://github.com/nodejs/node/blob/master/lib/internal/fs/watchers.js#L298
  * and here https://github.com/nodejs/node/blob/master/lib/fs.js#L1591
  *
- * we need to detect the platform like here https://github.com/nodejs/node/blob/master/lib/fs.js#L159
+ * need to detect the platform like here https://github.com/nodejs/node/blob/master/lib/fs.js#L159
  */
 import { platform } from "process";
 
@@ -30,10 +30,12 @@ import { platform } from "process";
 export async function watch(url, recursive, cb, th = 10) {
   let watchers;
   if (recursive && !(platform === "win32" || platform === "darwin")) {
-    // TODO: try spawning an process with inotify first
-    watchers = await watchFallback(url, cb, th);
+    // TODO: try spawning a process with inotify first
+    const [dirs] = await walk(url);
+    dirs.push(url);
+    watchers = dirs.map((u) => simpleWatch(u, false, cb, th));
   } else {
-    watchers = [watchStandard(url, recursive, cb, th)];
+    watchers = [simpleWatch(url, recursive, cb, th)];
   }
 
   return async () => {
@@ -52,7 +54,7 @@ export async function watch(url, recursive, cb, th = 10) {
  * @param {number} [th=10]
  * @returns {[AbortController,Promise<void>]}
  */
-function watchStandard(url, recursive, cb, th = 10) {
+function simpleWatch(url, recursive, cb, th = 10) {
   const ac = new AbortController();
   const { signal } = ac;
   if (!url.href.endsWith("/")) {
@@ -81,16 +83,4 @@ function watchStandard(url, recursive, cb, th = 10) {
     }
   }
   return [ac, w()];
-}
-
-/**
- * @param {URL} url
- * @param {(url: URL, event:EventType)=>any} [cb]
- * @param {number} [th=10]
- * @returns {Promise<[AbortController,Promise<void>][]>}
- */
-async function watchFallback(url, cb, th = 10) {
-  const [dirs] = await walk(url);
-  dirs.push(url);
-  return dirs.map((u) => watchStandard(u, false, cb, th));
 }
