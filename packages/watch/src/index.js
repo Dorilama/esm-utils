@@ -71,7 +71,7 @@ function simpleWatch(url, recursive, cb, th = 10) {
           last = { filename, time };
           const fileUrl = new URL(filename, url);
           if (cb) {
-            cb(fileUrl, eventType);
+            await cb(fileUrl, eventType);
           }
         }
       }

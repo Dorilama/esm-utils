@@ -1,5 +1,5 @@
 {
-  "name": "@dorilama/watch",
+  "name": "@dorilama/simple-watch",
   "version": "0.2.0",
   "description": "watch a folder for changes recursively",
   "scripts": {
