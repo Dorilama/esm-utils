@@ -1,6 +1,6 @@
 {
   "name": "@dorilama/walk",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "recursively walk a folder",
   "scripts": {
     "test": "c8 node test/index.js | tap-set-exit",

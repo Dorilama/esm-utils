@@ -18,14 +18,14 @@ test("non recursive", async (t) => {
     );
   };
   t.test("folder ending with '/'", async (t) => {
-    let { dirs, files } = await walk(
+    let [dirs, files] = await walk(
       new URL("./test-folder/a/", import.meta.url),
       false
     );
     runTests(t, dirs, files);
   });
   t.test("folder ending without '/'", async (t) => {
-    let { dirs, files } = await walk(
+    let [dirs, files] = await walk(
       new URL("./test-folder/a", import.meta.url),
       false
     );
@@ -57,13 +57,11 @@ test("recursive", async (t) => {
     );
   };
   t.test("folder ending with '/'", async (t) => {
-    let { dirs, files } = await walk(
-      new URL("./test-folder/", import.meta.url)
-    );
+    let [dirs, files] = await walk(new URL("./test-folder/", import.meta.url));
     runTests(t, dirs, files);
   });
   t.test("folder ending without '/'", async (t) => {
-    let { dirs, files } = await walk(new URL("./test-folder", import.meta.url));
+    let [dirs, files] = await walk(new URL("./test-folder", import.meta.url));
     runTests(t, dirs, files);
   });
 });

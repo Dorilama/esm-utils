@@ -4,7 +4,7 @@ import { readdir } from "fs/promises";
  * default to walk recursively
  * @param {URL} url
  * @param {boolean} recursive
- * @returns {Promise<{dirs: URL[], files: URL[]}>}
+ * @returns {Promise<[URL[],  URL[]]>}
  */
 export async function walk(url, recursive = true) {
   const entries = await readdir(url, { withFileTypes: true });
@@ -17,7 +17,7 @@ export async function walk(url, recursive = true) {
     if (file.isDirectory()) {
       const folderUrl = new URL(file.name + "/", url);
       if (recursive) {
-        const { dirs: subDirs, files: subFiles } = await walk(folderUrl);
+        const [subDirs, subFiles] = await walk(folderUrl);
         dirs = dirs.concat(folderUrl, subDirs);
         files = files.concat(subFiles);
       } else {
@@ -28,5 +28,5 @@ export async function walk(url, recursive = true) {
     }
   });
   await Promise.all(promises);
-  return { dirs, files };
+  return [dirs, files];
 }
