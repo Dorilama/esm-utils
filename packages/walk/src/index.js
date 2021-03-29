@@ -3,7 +3,7 @@ import { readdir } from "fs/promises";
  * Given a file URL return the list of files and dirs
  * default to walk recursively
  * @param {URL} url
- * @param {boolean} recursive
+ * @param {boolean} [recursive=true]
  * @returns {Promise<[URL[],  URL[]]>}
  */
 export async function walk(url, recursive = true) {

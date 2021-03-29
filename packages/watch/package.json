@@ -1,0 +1,17 @@
+{
+  "name": "@dorilama/watch",
+  "version": "0.1.0",
+  "description": "watch a folder for changes recursively",
+  "scripts": {
+    "test": "node test/index.js",
+    "test:only": "RUN_ONLY=true node test/index.js"
+  },
+  "keywords": [],
+  "author": "dorilama",
+  "license": "ISC",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.js",
+    "./package.json": "./package.json"
+  }
+}
