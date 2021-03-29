@@ -1,5 +1,6 @@
-import { promises as fsPromises } from "fs";
-const { readdir } = fsPromises;
+// import { promises as fsPromises } from "fs";
+// const { readdir } = fsPromises;
+import { readdir } from "fs/promises";
 /**
  * Given a file URL return the list of files and dirs
  * default to walk recursively
