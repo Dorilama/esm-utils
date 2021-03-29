@@ -3,8 +3,6 @@ import { watch as fsWatch } from "fs/promises";
 // @ts-ignore  TODO find why node resolve this correctly but the checker doesn't
 import { walk } from "@dorilama/walk";
 
-import { platform } from "process";
-
 /**
  * NOTE!!! node 15.12
  * watch function exported from fs/promises does not throw
@@ -15,6 +13,7 @@ import { platform } from "process";
  *
  * we need to detect the platform like here https://github.com/nodejs/node/blob/master/lib/fs.js#L159
  */
+import { platform } from "process";
 
 /**
  *
@@ -29,24 +28,21 @@ import { platform } from "process";
  * @returns {Promise<()=>void>}
  */
 export async function watch(url, recursive, cb, th = 10) {
+  let watchers;
   if (recursive && !(platform === "win32" || platform === "darwin")) {
-    const watchers = await watchFallback(url, cb, th);
-    return async () => {
-      const promises = watchers.map(([controller, done]) => {
-        controller.abort();
-        return done;
-      });
-      await Promise.all(promises);
-      return;
-    };
+    // TODO: try spawning an process with inotify first
+    watchers = await watchFallback(url, cb, th);
   } else {
-    const [controller, done] = watchStandard(url, recursive, cb, th);
-    return async () => {
-      controller.abort();
-      await done;
-      return;
-    };
+    watchers = [watchStandard(url, recursive, cb, th)];
   }
+
+  return async () => {
+    const promises = watchers.map(([controller, done]) => {
+      controller.abort();
+      return done;
+    });
+    await Promise.all(promises);
+  };
 }
 
 /**
@@ -64,7 +60,6 @@ function watchStandard(url, recursive, cb, th = 10) {
   }
   async function w() {
     try {
-      // console.log("start watching", url.href);
       let last = { filename: "", time: 0 };
       const watcher = fsWatch(url, { signal, recursive });
       for await (const event of watcher) {
@@ -80,7 +75,6 @@ function watchStandard(url, recursive, cb, th = 10) {
       }
     } catch (err) {
       if (err.name === "AbortError") {
-        // console.log("watcher aborted");
         return;
       }
       throw err;
@@ -100,12 +94,3 @@ async function watchFallback(url, cb, th = 10) {
   dirs.push(url);
   return dirs.map((u) => watchStandard(u, false, cb, th));
 }
-
-const abort = await watch(new URL("../", import.meta.url), true, (u, e) =>
-  console.log(u, e)
-);
-setTimeout(async () => {
-  console.log("abort");
-  await abort();
-  console.log("done");
-}, 30000);
