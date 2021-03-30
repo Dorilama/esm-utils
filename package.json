@@ -1,11 +1,9 @@
 {
-  "name": "ce",
+  "name": "@dorilama/utils",
   "version": "0.1.0",
-  "description": "",
+  "description": "simple utils to use with ES modules, latest node and latest npm",
   "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
+  "scripts": {},
   "keywords": [],
   "author": "dorilama",
   "license": "ISC",
@@ -15,10 +13,11 @@
   "type": "module",
   "engines": {
     "node": ">=15.12",
-    "npm": ">=7"
+    "npm": ">=7.7.6"
   },
   "devDependencies": {
     "c8": "^7.6.0",
+    "np": "^7.4.0",
     "tap-set-exit": "^1.1.1",
     "zora": "^4.0.2"
   }
