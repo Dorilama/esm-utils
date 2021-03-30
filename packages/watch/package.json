@@ -3,7 +3,7 @@
   "version": "0.3.0",
   "description": "watch a folder for changes recursively",
   "scripts": {
-    "test": "node test/index.js",
+    "test": "c8 node test/index.js | tap-set-exit",
     "test:only": "RUN_ONLY=true node test/index.js"
   },
   "keywords": [],
