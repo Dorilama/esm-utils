@@ -6,16 +6,16 @@ import { watch } from "../src/index.js";
 //   t.fail("TODO");
 // });
 
-test("non recursive", async (t) => {
-  const watchTest = async (url, event) => {
-    t.ok(["rename", "change"].includes(event));
-    t.equal(url, new URL("./test-folder/a/a.txt", import.meta.url));
-  };
-  const abort = await watch(
-    new URL("./test-folder/", import.meta.url),
-    false,
-    watchTest
-  );
-  await writeFile(new URL("./test-folder/a/a.txt", import.meta.url), "hello");
-  await abort();
-});
+// test("non recursive", async (t) => {
+//   const watchTest = async (url, event) => {
+//     t.ok(["rename", "change"].includes(event));
+//     t.equal(url, new URL("./test-folder/a/a.txt", import.meta.url));
+//   };
+//   const abort = await watch(
+//     new URL("./test-folder/", import.meta.url),
+//     false,
+//     watchTest
+//   );
+//   await writeFile(new URL("./test-folder/a/a.txt", import.meta.url), "hello");
+//   await abort();
+// });
